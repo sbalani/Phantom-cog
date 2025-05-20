@@ -23,8 +23,9 @@
 * Apr 23, 2025: 😊 Thanks to [ComfyUI-WanVideoWrapper](https://github.com/kijai/ComfyUI-WanVideoWrapper/tree/dev) for adapting ComfyUI to Phantom-Wan-1.3B. Everyone is welcome to use it !
 
 ## 📑 Todo List
-- [x] Inference codes and Checkpoint of Phantom-Wan 1.3B 
-- [ ] Checkpoint of Phantom-Wan 14B
+- [x] Inference codes and Checkpoint of Phantom-Wan-1.3B 
+- [ ] Checkpoint of Phantom-Wan-14B
+- [ ] Open source Phantom-Data
 - [ ] Training codes of Phantom-Wan
 
 ## 📖 Overview
