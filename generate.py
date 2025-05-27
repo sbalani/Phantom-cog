@@ -350,7 +350,7 @@ def generate(args):
         ref_images = load_ref_images(args.ref_image, SIZE_CONFIGS[args.size])
 
         logging.info("Creating Phantom-Wan pipeline.")
-        wan_s2v = wan.Phantom_Wan_S2V(
+        wan_s2v = phantom_wan.Phantom_Wan_S2V(
             config=cfg,
             checkpoint_dir=args.ckpt_dir,
             phantom_ckpt=args.phantom_ckpt,
@@ -404,7 +404,7 @@ def generate(args):
             logging.info(f"Extended prompt: {args.prompt}")
 
         logging.info("Creating Phantom-Wan pipeline.")
-        wan_t2v = wan.WanT2V(
+        wan_t2v = phantom_wan.WanT2V(
             config=cfg,
             checkpoint_dir=args.ckpt_dir,
             device_id=device,
@@ -461,7 +461,7 @@ def generate(args):
             logging.info(f"Extended prompt: {args.prompt}")
 
         logging.info("Creating WanI2V pipeline.")
-        wan_i2v = wan.WanI2V(
+        wan_i2v = phantom_wan.WanI2V(
             config=cfg,
             checkpoint_dir=args.ckpt_dir,
             device_id=device,
