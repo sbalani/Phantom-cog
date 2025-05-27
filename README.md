@@ -234,5 +234,5 @@ If you find this project useful for your research, please consider citing our [p
 }
 ```
 
-## :e-mail: Contact
+## 📧 Contact
 If you have any comments or questions regarding this open-source project, please open a new issue or contact [Tianxiang Ma](https://tianxiangma.github.io/).
