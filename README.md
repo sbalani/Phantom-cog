@@ -227,8 +227,8 @@ If you find this project useful for your research, please consider citing our [p
 ### BibTeX
 ```bibtex
 @article{liu2025phantom,
-  title={Phantom: Subject-Consistent Video Generation via Cross-Modal Alignment},
-  author={Liu, Lijie and Ma, Tianxaing and Li, Bingchuan and Chen, Zhuowei and Liu, Jiawei and He, Qian and Wu, Xinglong},
+  title={Phantom: Subject-consistent video generation via cross-modal alignment},
+  author={Liu, Lijie and Ma, Tianxiang and Li, Bingchuan and Chen, Zhuowei and Liu, Jiawei and Li, Gen and Zhou, Siyu and He, Qian and Wu, Xinglong},
   journal={arXiv preprint arXiv:2502.11079},
   year={2025}
 }
