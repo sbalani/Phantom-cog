@@ -218,6 +218,12 @@ For more inference examples, please refer to "infer.sh". You will get the follow
 ## Acknowledgements
 We would like to express our gratitude to the SEED team for their support. Special thanks to Lu Jiang, Haoyuan Guo, Zhibei Ma, and Sen Wang for their assistance with the model and data. In addition, we are also very grateful to Siying Chen, Qingyang Li, and Wei Han for their help with the evaluation.
 
+##  Citation
+
+If Phantom is helpful, please help to ⭐ the repo.
+
+If you find this project useful for your research, please consider citing our [paper](https://arxiv.org/abs/2502.11079).
+
 ## BibTeX
 ```bibtex
 @article{liu2025phantom,
@@ -228,5 +234,5 @@ We would like to express our gratitude to the SEED team for their support. Speci
 }
 ```
 
-## Star History
-[![Star History Chart](https://api.star-history.com/svg?repos=Phantom-video/Phantom&type=Date)](https://www.star-history.com/#Phantom-video/Phantom&Date)
+## :e-mail: Contact
+If you have any comments or questions, please open a new issue or contact [Tianxiang Ma](https://tianxiangma.github.io/).
