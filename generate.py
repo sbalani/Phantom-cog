@@ -25,10 +25,10 @@ import torch, random
 import torch.distributed as dist
 from PIL import Image, ImageOps
 
-import phantom_wan
-from phantom_wan.configs import WAN_CONFIGS, SIZE_CONFIGS, MAX_AREA_CONFIGS, SUPPORTED_SIZES
-from phantom_wan.utils.prompt_extend import DashScopePromptExpander, QwenPromptExpander
-from phantom_wan.utils.utils import cache_video, cache_image, str2bool
+import wan
+from wan.configs import WAN_CONFIGS, SIZE_CONFIGS, MAX_AREA_CONFIGS, SUPPORTED_SIZES
+from wan.utils.prompt_extend import DashScopePromptExpander, QwenPromptExpander
+from wan.utils.utils import cache_video, cache_image, str2bool
 
 EXAMPLE_PROMPT = {
     "t2v-1.3B": {
@@ -102,6 +102,12 @@ def _parse_args():
         type=int,
         default=None,
         help="How many frames to sample from a image or video. The number should be 4n+1"
+    )
+    parser.add_argument(
+        "--sample_fps",
+        type=int,
+        default=None,
+        help="The fps of the generated video."
     )
     parser.add_argument(
         "--ckpt_dir",
@@ -328,6 +334,9 @@ def generate(args):
     if args.ulysses_size > 1:
         assert cfg.num_heads % args.ulysses_size == 0, f"`num_heads` must be divisible by `ulysses_size`."
 
+    if args.sample_fps is not None:
+        cfg.sample_fps = args.sample_fps
+
     logging.info(f"Generation job args: {args}")
     logging.info(f"Generation model config: {cfg}")
 
@@ -341,7 +350,7 @@ def generate(args):
         ref_images = load_ref_images(args.ref_image, SIZE_CONFIGS[args.size])
 
         logging.info("Creating Phantom-Wan pipeline.")
-        wan_s2v = phantom_wan.Phantom_Wan_S2V(
+        wan_s2v = wan.Phantom_Wan_S2V(
             config=cfg,
             checkpoint_dir=args.ckpt_dir,
             phantom_ckpt=args.phantom_ckpt,
@@ -395,7 +404,7 @@ def generate(args):
             logging.info(f"Extended prompt: {args.prompt}")
 
         logging.info("Creating Phantom-Wan pipeline.")
-        wan_t2v = phantom_wan.WanT2V(
+        wan_t2v = wan.WanT2V(
             config=cfg,
             checkpoint_dir=args.ckpt_dir,
             device_id=device,
@@ -452,7 +461,7 @@ def generate(args):
             logging.info(f"Extended prompt: {args.prompt}")
 
         logging.info("Creating WanI2V pipeline.")
-        wan_i2v = phantom_wan.WanI2V(
+        wan_i2v = wan.WanI2V(
             config=cfg,
             checkpoint_dir=args.ckpt_dir,
             device_id=device,

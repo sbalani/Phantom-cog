@@ -107,11 +107,29 @@ class Phantom_Wan_S2V:
                              qk_norm=config.qk_norm,
                              cross_attn_norm=config.cross_attn_norm,
                              eps=config.eps)
-        logging.info(f"loading ckpt.")
-        state = torch.load(phantom_ckpt, map_location=self.device)
-        logging.info(f"loading state dict.")
-        self.model.load_state_dict(state, strict=False)
-        # self.model = WanModel.from_pretrained(checkpoint_dir)
+        if phantom_ckpt.endswith('.pth'):
+            logging.info(f"loading ckpt.")
+            state = torch.load(phantom_ckpt, map_location=self.device)
+            logging.info(f"loading state dict.")
+            self.model.load_state_dict(state, strict=False)
+        else:
+            from safetensors.torch import load_file
+            import json
+            def load_custom_sharded_weights(model_dir, base_name, device="cpu"):
+                index_path = f"{model_dir}/{base_name}.safetensors.index.json"
+                with open(index_path, "r") as f:
+                    index = json.load(f)
+                weight_map = index["weight_map"]
+                shard_files = set(weight_map.values())
+                state_dict = {}
+                for shard_file in shard_files:
+                    shard_path = f"{model_dir}/{shard_file}"
+                    shard_state = load_file(shard_path)
+                    shard_state = {k: v.to(device) for k, v in shard_state.items()}
+                    state_dict.update(shard_state)
+                return state_dict
+            state = load_custom_sharded_weights(phantom_ckpt, 'Phantom_Wan_14B', self.device)
+            self.model.load_state_dict(state, strict=False)
         self.model.eval().requires_grad_(False)
 
         if use_usp:

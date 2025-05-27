@@ -81,11 +81,6 @@ class WanT2V:
             device=self.device)
 
         logging.info(f"Creating WanModel from {checkpoint_dir}")
-        # self.model = WanModel()
-        # logging.info(f"loading ckpt.")
-        # state = torch.load("/mnt/bn/matianxiang-data-hl2/vfm-prod/downloads/Wan2.1-T2V-14B-dit.pth", map_location=self.device)
-        # logging.info(f"loading state dict.")
-        # self.model.load_state_dict(state, strict=False)
         self.model = WanModel.from_pretrained(checkpoint_dir)
         self.model.eval().requires_grad_(False)
 
