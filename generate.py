@@ -25,10 +25,10 @@ import torch, random
 import torch.distributed as dist
 from PIL import Image, ImageOps
 
-import wan
-from wan.configs import WAN_CONFIGS, SIZE_CONFIGS, MAX_AREA_CONFIGS, SUPPORTED_SIZES
-from wan.utils.prompt_extend import DashScopePromptExpander, QwenPromptExpander
-from wan.utils.utils import cache_video, cache_image, str2bool
+import phantom_wan
+from phantom_wan.configs import WAN_CONFIGS, SIZE_CONFIGS, MAX_AREA_CONFIGS, SUPPORTED_SIZES
+from phantom_wan.utils.prompt_extend import DashScopePromptExpander, QwenPromptExpander
+from phantom_wan.utils.utils import cache_video, cache_image, str2bool
 
 EXAMPLE_PROMPT = {
     "t2v-1.3B": {
