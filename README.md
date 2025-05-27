@@ -212,6 +212,8 @@ For more inference examples, please refer to "infer.sh". You will get the follow
 
 </table>
 
+> The GIF videos are compressed.
+
 
 ## Acknowledgements
 We would like to express our gratitude to the SEED team for their support. Special thanks to Lu Jiang, Haoyuan Guo, Zhibei Ma, and Sen Wang for their assistance with the model and data. In addition, we are also very grateful to Siying Chen, Qingyang Li, and Wei Han for their help with the evaluation.
