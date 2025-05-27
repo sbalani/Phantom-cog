@@ -190,8 +190,8 @@ For more inference examples, please refer to "infer.sh". You will get the follow
 
   <tr>
     <td style="text-align: center; vertical-align: middle;">
-      <img src="examples/ref17.png" alt="Image 3" style="height: 180px;">
-      <img src="examples/ref18.png" alt="Image 4" style="height: 180px;">
+      <img src="examples/ref17.png" alt="Image 3" style="height: 150px;">
+      <img src="examples/ref18.png" alt="Image 4" style="height: 150px;">
     </td>
     <td style="text-align: center; vertical-align: middle;">
       <img src="examples/ref_results/result7.gif" alt="GIF 2" style="width: 400px;">
