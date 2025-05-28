@@ -165,6 +165,7 @@ torchrun --nproc_per_node=8 generate.py --task s2v-14B --size 832*480 --frame_nu
 > 💡Note: 
 > * The currently released Phantom-Wan-14B model was trained on 480P data but can also be applied to generating videos at 720P and higher resolutions, though the results may be less stable. We plan to release a version further trained on 720P data in the future.
 > * The Phantom-Wan-14B model was trained on 24fps data, but it can also generate 16fps videos, similar to the native Wan2.1. However, the quality may experience a slight decline.
+> * It is recommended to generate horizontal videos, as they tend to produce more stable results compared to vertical videos.
 
 For more inference examples, please refer to "infer.sh". You will get the following generated results:
 
