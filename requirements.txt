@@ -16,3 +16,4 @@ https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.2.post1/flas
 gradio>=5.0.0
 numpy>=1.23.5,<2
 xfuser>=0.4.1
+protobuf

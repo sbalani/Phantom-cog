@@ -8,6 +8,7 @@ from phantom_wan.configs import WAN_CONFIGS, SIZE_CONFIGS, SUPPORTED_SIZES
 from phantom_wan.utils.prompt_extend import DashScopePromptExpander, QwenPromptExpander
 from generate import generate, _validate_args
 import subprocess
+import tempfile
 
 class Predictor(BasePredictor):
     def setup(self) -> None:
@@ -23,10 +24,10 @@ class Predictor(BasePredictor):
             "Wan2.1_VAE.pth": "https://huggingface.co/Wan-AI/Wan2.1-T2V-1.3B/resolve/main/Wan2.1_VAE.pth?download=true",
             "Phantom-Wan-1.3B.pth": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom-Wan-1.3B.pth?download=true",
             # Tokenizer files
-            "tokenizer/config.json": "https://huggingface.co/google/umt5-xxl/resolve/main/config.json",
-            "tokenizer/special_tokens_map.json": "https://huggingface.co/google/umt5-xxl/resolve/main/special_tokens_map.json",
-            "tokenizer/tokenizer_config.json": "https://huggingface.co/google/umt5-xxl/resolve/main/tokenizer_config.json",
-            "tokenizer/spiece.model": "https://huggingface.co/google/umt5-xxl/resolve/main/spiece.model"
+            "config.json": "https://huggingface.co/google/umt5-xxl/resolve/main/config.json",
+            "special_tokens_map.json": "https://huggingface.co/google/umt5-xxl/resolve/main/special_tokens_map.json",
+            "tokenizer_config.json": "https://huggingface.co/google/umt5-xxl/resolve/main/tokenizer_config.json",
+            "spiece.model": "https://huggingface.co/google/umt5-xxl/resolve/main/spiece.model"
         }
         
         for filename, url in model_files.items():
@@ -43,7 +44,7 @@ class Predictor(BasePredictor):
         # Update config to use local tokenizer path
         for config in WAN_CONFIGS.values():
             if hasattr(config, 't5_tokenizer'):
-                config.t5_tokenizer = "tokenizer"
+                config.t5_tokenizer = "."
 
     def predict(
         self,
@@ -135,6 +136,10 @@ class Predictor(BasePredictor):
             
         # Prepare ref_image string if provided
         ref_image_str = ",".join([str(p) for p in ref_image]) if ref_image else None
+        
+        # Create a temporary directory for the output
+        temp_dir = tempfile.mkdtemp()
+        output_path = os.path.join(temp_dir, "output.mp4")
             
         # Prepare arguments
         args = type('Args', (), {
@@ -160,14 +165,15 @@ class Predictor(BasePredictor):
             'sample_shift': sample_shift,
             'sample_guide_scale': sample_guide_scale,
             'sample_guide_scale_img': sample_guide_scale_img,
-            'sample_guide_scale_text': sample_guide_scale_text
+            'sample_guide_scale_text': sample_guide_scale_text,
+            'save_file': output_path
         })()
         
         # Validate arguments
         _validate_args(args)
         
         # Generate output
-        output = generate(args)
+        generate(args)
         
         # Return the output path
-        return Path(output) 
+        return Path(output_path)
