@@ -22,7 +22,7 @@ class Predictor(BasePredictor):
         model_files = {
             "models_t5_umt5-xxl-enc-bf16.pth": "https://huggingface.co/Wan-AI/Wan2.1-T2V-1.3B/resolve/main/models_t5_umt5-xxl-enc-bf16.pth",
             "Wan2.1_VAE.pth": "https://huggingface.co/Wan-AI/Wan2.1-T2V-1.3B/resolve/main/Wan2.1_VAE.pth?download=true",
-            "Phantom-Wan-1.3B.pth": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom-Wan-1.3B.pth?download=true",
+            # "Phantom-Wan-1.3B.pth": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom-Wan-1.3B.pth?download=true",  # Commented out 1.3B model
             # Tokenizer files
             "config.json": "https://huggingface.co/google/umt5-xxl/resolve/main/config.json",
             "special_tokens_map.json": "https://huggingface.co/google/umt5-xxl/resolve/main/special_tokens_map.json",
@@ -37,9 +37,27 @@ class Predictor(BasePredictor):
                 print(f"Downloading {filename}...")
                 subprocess.run(["wget", "-O", filepath, url], check=True)
         
+        # Download 14B model shards
+        model_shards = {
+            "model-00001-of-00006.safetensors": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B-00001-of-00006.safetensors",
+            "model-00002-of-00006.safetensors": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B-00002-of-00006.safetensors",
+            "model-00003-of-00006.safetensors": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B-00003-of-00006.safetensors",
+            "model-00004-of-00006.safetensors": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B-00004-of-00006.safetensors",
+            "model-00005-of-00006.safetensors": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B-00005-of-00006.safetensors",
+            "model-00006-of-00006.safetensors": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B-00006-of-00006.safetensors",
+            "model.safetensors.index.json": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B.safetensors.index.json"
+        }
+        
+        for filename, url in model_shards.items():
+            filepath = os.path.join("models", filename)
+            os.makedirs(os.path.dirname(filepath), exist_ok=True)
+            if not os.path.exists(filepath):
+                print(f"Downloading {filename}...")
+                subprocess.run(["wget", "-O", filepath, url], check=True)
+        
         # Model paths are relative to the project root
         self.ckpt_dir = "models"
-        self.phantom_ckpt = "Phantom-Wan-1.3B.pth"
+        self.phantom_ckpt = "model.safetensors.index.json"  # Updated to use safetensors index
         
         # Update config to use local tokenizer path
         for config in WAN_CONFIGS.values():
@@ -50,8 +68,8 @@ class Predictor(BasePredictor):
         self,
         task: str = Input(
             description="The task to run",
-            default="t2v-1.3B",
-            choices=["t2v-1.3B", "t2v-14B", "t2i-14B", "i2v-14B", "s2v-1.3B", "s2v-14B"]
+            default="t2v-14B",
+            choices=["t2v-14B", "t2i-14B", "i2v-14B", "s2v-14B"]
         ),
         prompt: str = Input(description="The prompt to generate from"),
         size: str = Input(

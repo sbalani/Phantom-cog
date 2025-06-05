@@ -83,6 +83,7 @@ class WanT2V:
         logging.info(f"Creating WanModel from {checkpoint_dir}")
         
         # For 1.3B model (single .pth file):
+        """
         self.model = WanModel(
             model_type='t2v',
             patch_size=config.patch_size,
@@ -101,11 +102,11 @@ class WanT2V:
             eps=config.eps
         )
         self.model.load_state_dict(torch.load(os.path.join(checkpoint_dir, "Phantom-Wan-1.3B.pth"), map_location=self.device))
-        
+        """
         # For 14B model (safetensors shards):
         # Comment out the above WanModel initialization and load_state_dict lines
         # Uncomment the following line:
-        # self.model = WanModel.from_pretrained(checkpoint_dir)
+        self.model = WanModel.from_pretrained(checkpoint_dir)
         
         self.model.eval().requires_grad_(False)
 
