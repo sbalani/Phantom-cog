@@ -7,8 +7,8 @@ import phantom_wan
 from phantom_wan.configs import WAN_CONFIGS, SIZE_CONFIGS, SUPPORTED_SIZES
 from phantom_wan.utils.prompt_extend import DashScopePromptExpander, QwenPromptExpander
 from generate import generate, _validate_args
-import subprocess
 import tempfile
+from huggingface_hub import hf_hub_download
 
 class Predictor(BasePredictor):
     def setup(self) -> None:
@@ -18,46 +18,79 @@ class Predictor(BasePredictor):
         # Create models directory if it doesn't exist
         os.makedirs("models", exist_ok=True)
         
-        # Download model files if they don't exist
+        # Download model files if they don't exist, using huggingface_hub
         model_files = {
-            "models_t5_umt5-xxl-enc-bf16.pth": "https://huggingface.co/Wan-AI/Wan2.1-T2V-1.3B/resolve/main/models_t5_umt5-xxl-enc-bf16.pth",
-            "Wan2.1_VAE.pth": "https://huggingface.co/Wan-AI/Wan2.1-T2V-1.3B/resolve/main/Wan2.1_VAE.pth?download=true",
-            # "Phantom-Wan-1.3B.pth": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom-Wan-1.3B.pth?download=true",  # Commented out 1.3B model
+            "models_t5_umt5-xxl-enc-bf16.pth": {
+                "repo_id": "Wan-AI/Wan2.1-T2V-1.3B",
+                "filename": "models_t5_umt5-xxl-enc-bf16.pth"
+            },
+            "Wan2.1_VAE.pth": {
+                "repo_id": "Wan-AI/Wan2.1-T2V-1.3B",
+                "filename": "Wan2.1_VAE.pth"
+            },
+            "diffusion_pytorch_model.safetensors": {
+                "repo_id": "Wan-AI/Wan2.1-T2V-1.3B",
+                "filename": "diffusion_pytorch_model.safetensors"
+            },
+            "Phantom_Wan_14B.safetensors.index.json": {
+                "repo_id": "bytedance-research/Phantom",
+                "filename": "Phantom_Wan_14B.safetensors.index.json"
+            },
             # Tokenizer files
-            "config.json": "https://huggingface.co/google/umt5-xxl/resolve/main/config.json",
-            "special_tokens_map.json": "https://huggingface.co/google/umt5-xxl/resolve/main/special_tokens_map.json",
-            "tokenizer_config.json": "https://huggingface.co/google/umt5-xxl/resolve/main/tokenizer_config.json",
-            "spiece.model": "https://huggingface.co/google/umt5-xxl/resolve/main/spiece.model"
+            "config.json": {
+                "repo_id": "Wan-AI/Wan2.1-T2V-1.3B",
+                "filename": "config.json"
+            },
+            "special_tokens_map.json": {
+                "repo_id": "google/umt5-xxl",
+                "filename": "special_tokens_map.json"
+            },
+            "tokenizer_config.json": {
+                "repo_id": "google/umt5-xxl",
+                "filename": "tokenizer_config.json"
+            },
+            "spiece.model": {
+                "repo_id": "google/umt5-xxl",
+                "filename": "spiece.model"
+            }
         }
         
-        for filename, url in model_files.items():
+        for filename, info in model_files.items():
             filepath = os.path.join("models", filename)
-            os.makedirs(os.path.dirname(filepath), exist_ok=True)
             if not os.path.exists(filepath):
-                print(f"Downloading {filename}...")
-                subprocess.run(["wget", "-O", filepath, url], check=True)
+                print(f"Downloading {filename} from {info['repo_id']}...")
+                hf_hub_download(
+                    repo_id=info["repo_id"],
+                    filename=info["filename"],
+                    local_dir="models",
+                    local_dir_use_symlinks=False
+                )
         
-        # Download 14B model shards
+        # Download 14B model shards using huggingface_hub
         model_shards = {
-            "model-00001-of-00006.safetensors": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B-00001-of-00006.safetensors",
-            "model-00002-of-00006.safetensors": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B-00002-of-00006.safetensors",
-            "model-00003-of-00006.safetensors": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B-00003-of-00006.safetensors",
-            "model-00004-of-00006.safetensors": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B-00004-of-00006.safetensors",
-            "model-00005-of-00006.safetensors": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B-00005-of-00006.safetensors",
-            "model-00006-of-00006.safetensors": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B-00006-of-00006.safetensors",
-            "model.safetensors.index.json": "https://huggingface.co/bytedance-research/Phantom/resolve/main/Phantom_Wan_14B.safetensors.index.json"
+            "model-00001-of-00006.safetensors": "Phantom_Wan_14B-00001-of-00006.safetensors",
+            "model-00002-of-00006.safetensors": "Phantom_Wan_14B-00002-of-00006.safetensors",
+            "model-00003-of-00006.safetensors": "Phantom_Wan_14B-00003-of-00006.safetensors",
+            "model-00004-of-00006.safetensors": "Phantom_Wan_14B-00004-of-00006.safetensors",
+            "model-00005-of-00006.safetensors": "Phantom_Wan_14B-00005-of-00006.safetensors",
+            "model-00006-of-00006.safetensors": "Phantom_Wan_14B-00006-of-00006.safetensors",
+            "model.safetensors.index.json": "Phantom_Wan_14B.safetensors.index.json"
         }
         
-        for filename, url in model_shards.items():
+        for filename, repo_filename in model_shards.items():
             filepath = os.path.join("models", filename)
-            os.makedirs(os.path.dirname(filepath), exist_ok=True)
             if not os.path.exists(filepath):
-                print(f"Downloading {filename}...")
-                subprocess.run(["wget", "-O", filepath, url], check=True)
+                print(f"Downloading {filename} from bytedance-research/Phantom...")
+                hf_hub_download(
+                    repo_id="bytedance-research/Phantom",
+                    filename=repo_filename,
+                    local_dir="models",
+                    local_dir_use_symlinks=False
+                )
         
         # Model paths are relative to the project root
         self.ckpt_dir = "models"
-        self.phantom_ckpt = "model.safetensors.index.json"  # Updated to use safetensors index
+        self.phantom_ckpt = "models"  # Directory path where the index file is located
         
         # Update config to use local tokenizer path
         for config in WAN_CONFIGS.values():
